@@ -74,7 +74,7 @@ function playVideo() {
           返回
         </button>
         <span class="text-slate-300">/</span>
-        <h1 class="text-sm font-medium text-slate-700 truncate">{{ project.title }}</h1>
+        <h1 class="text-sm font-bold text-slate-800 truncate">{{ project.title }}</h1>
       </div>
     </div>
 
@@ -257,7 +257,7 @@ function playVideo() {
 
       <!-- ========== 项目介绍 ========== -->
       <section class="mb-10">
-        <h2 class="text-lg font-semibold text-slate-800 mb-3">📖 项目介绍</h2>
+        <h2 class="text-lg font-semibold text-slate-800 mb-3">项目介绍</h2>
         <div class="text-slate-600 leading-relaxed whitespace-pre-line">
           {{ project.description }}
         </div>

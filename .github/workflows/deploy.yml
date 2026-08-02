@@ -4,26 +4,14 @@ on:
   push:
     branches: [main]
 
-  # 也支持手动触发
   workflow_dispatch:
 
-# 设置 GITHUB_TOKEN 权限
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 只允许一个并发部署
-concurrency:
-  group: pages
-  cancel-in-progress: true
+  contents: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout
@@ -40,17 +28,20 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Add SPA fallback for GitHub Pages
-        run: cp dist/index.html dist/404.html
+      - name: Prepare docs/
+        run: |
+          rm -rf docs
+          cp -r dist docs
+          cp dist/index.html docs/404.html
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Push to main
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to deploy"
+          else
+            git commit -m "deploy: update GitHub Pages [skip ci]"
+            git push
+          fi
